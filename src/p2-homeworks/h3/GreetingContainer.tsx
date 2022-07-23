@@ -1,9 +1,11 @@
-import React, {useState} from 'react'
+import React, {ChangeEvent, useState} from 'react'
 import Greeting from './Greeting'
+import {UserType} from "./HW3";
+import {KeyboardEvent} from "react";
 
-type GreetingContainerPropsType = {
-    users: any // need to fix any
-    addUserCallback: any // need to fix any
+export type GreetingContainerPropsType = {
+    users: UserType[]
+    addUserCallback: (name: string) => void/// may be correct
 }
 
 // более простой и понятный для новичков
@@ -12,17 +14,29 @@ type GreetingContainerPropsType = {
 // более современный и удобный для про :)
 // уровень локальной логики
 const GreetingContainer: React.FC<GreetingContainerPropsType> = ({users, addUserCallback}) => { // деструктуризация пропсов
-    const [name, setName] = useState<any>('') // need to fix any
-    const [error, setError] = useState<any>('') // need to fix any
+    const [name, setName] = useState<string>('') /// need to fix any
+    const [error, setError] = useState<string | null>(null) /// need to fix any
 
-    const setNameCallback = (e: any) => { // need to fix any
-        setName('') // need to fix
+    const setNameCallback = (event:ChangeEvent<HTMLInputElement> ) => { // need to fix any
+        setName(event.currentTarget.value)
+        //setName('') // need to fix
     }
     const addUser = () => {
-        alert(`Hello  !`) // need to fix
+       if (name) {
+            addUserCallback(name)
+            alert(`Hello ${name} !`) /// need to fix
+        } else {
+         setError('Field is required');
+       }
+        setName('')
     }
 
-    const totalUsers = 0 // need to fix
+    const onKeyDownInput = (e: KeyboardEvent<HTMLInputElement> ) => {
+        if (e.key === 'Enter') addUser()
+    }
+
+    const totalUsers = users.length // need to fix
+
 
     return (
         <Greeting
@@ -31,6 +45,7 @@ const GreetingContainer: React.FC<GreetingContainerPropsType> = ({users, addUser
             addUser={addUser}
             error={error}
             totalUsers={totalUsers}
+            onKeyDownInput={onKeyDownInput}
         />
     )
 }
